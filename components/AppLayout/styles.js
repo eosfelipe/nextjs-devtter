@@ -13,10 +13,25 @@ export const globalStyles = css.global`
     background-size: 50px 50px;
     padding: 0;
     margin: 0;
+    overflow: hidden;
     font-family: ${fonts.base};
   }
   * {
     box-sizing: border-box;
+  }
+  textarea,
+  input {
+    font-family: ${fonts.base};
+  }
+  #nprogress .bar {
+    background: ${colors.primary};
+    height: 5px;
+  }
+  #nprogress .spinner-icon {
+    width: 18px;
+    height: 18px;
+    border-top-color: ${colors.primary};
+    border-left-color: ${colors.primary};
   }
 `;
 export default css`
@@ -31,6 +46,7 @@ export default css`
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
     height: 100%;
     width: 100%;
+    overflow-y: auto;
     position: relative;
   }
   @media (min-width: ${breakpoints.mobile}) {

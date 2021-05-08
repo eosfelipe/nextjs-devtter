@@ -1,28 +1,25 @@
 import Head from "next/head";
-import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
 import AppLayout from "components/AppLayout";
 import Button from "components/Button";
 import Github from "components/Icons/Github";
 import { colors } from "styles/theme";
-import { loginWithGithub, onAuthStateChanged } from "firebase/client";
-import Avatar from "components/Avatar";
+import { loginWithGithub } from "firebase/client";
+import useUser, { USER_STATES } from "hooks/useUser";
 
 export default function Home() {
-  const [user, setUser] = useState(null);
+  const user = useUser();
+  const router = useRouter();
 
   useEffect(() => {
-    onAuthStateChanged(setUser);
-  }, []);
+    user && router.replace("/home");
+  }, [user]);
 
   const handleLogin = () => {
-    loginWithGithub()
-      .then((user) => {
-        setUser(user);
-        console.log(user);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    loginWithGithub().catch((error) => {
+      console.log(error);
+    });
   };
 
   return (
@@ -38,20 +35,13 @@ export default function Home() {
           <h1>Devtter</h1>
           <h2>Talk about development with developers 🧑👧</h2>
           <div>
-            {user === null ? (
+            {user === USER_STATES.NOT_LOGGED && (
               <Button onClick={handleLogin}>
                 <Github fill={colors.white} width={24} height={24} />
                 Login with Github
               </Button>
-            ) : (
-              <div>
-                <Avatar
-                  alt={user.username}
-                  src={user.avatar}
-                  text={user.username}
-                />
-              </div>
             )}
+            {user === USER_STATES.NOT_KNOWS && <span>Loading ....</span>}
           </div>
         </section>
       </AppLayout>
@@ -77,6 +67,9 @@ export default function Home() {
           color: ${colors.secondary};
           font-size: 21px;
           margin: 0;
+        }
+        span {
+          color: ${colors.primary};
         }
       `}</style>
     </>
