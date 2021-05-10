@@ -48,3 +48,22 @@ export const addDevit = ({ avatar, content, userId, userName }) => {
     userName,
   });
 };
+
+export const fetchLatestDevits = () => {
+  return db
+    .collection("devit")
+    .get()
+    .then(({ docs }) => {
+      return docs.map((doc) => {
+        const data = doc.data();
+        const id = doc.id;
+        const { createdAt } = data;
+
+        return {
+          ...data,
+          id,
+          createdAt: +createdAt.toDate(),
+        };
+      });
+    });
+};
