@@ -1,7 +1,8 @@
-import Avatar from "components/Avatar";
-import useTimeAgo from "hooks/useTimeAgo";
+import Avatar from "components/Avatar"
+import useTimeAgo from "hooks/useTimeAgo"
+
 const Devit = ({ avatar, userName, content, createdAt, id }) => {
-  const timeago = useTimeAgo(createdAt);
+  const timeago = useTimeAgo(createdAt)
   return (
     <>
       <article>
@@ -36,7 +37,7 @@ const Devit = ({ avatar, userName, content, createdAt, id }) => {
         }
       `}</style>
     </>
-  );
-};
+  )
+}
 
-export default Devit;
+export default Devit

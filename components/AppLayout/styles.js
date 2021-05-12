@@ -1,8 +1,8 @@
-import css from "styled-jsx/css";
-import { breakpoints, fonts, colors } from "../../styles/theme";
-import { addOpacityToColor } from "../../styles/utils";
+import css from "styled-jsx/css"
+import { breakpoints, fonts, colors } from "../../styles/theme"
+import { addOpacityToColor } from "../../styles/utils"
 
-const backgroundColor = addOpacityToColor(colors.primary, 0.3);
+const backgroundColor = addOpacityToColor(colors.primary, 0.3)
 
 export const globalStyles = css.global`
   html,
@@ -33,7 +33,7 @@ export const globalStyles = css.global`
     border-top-color: ${colors.primary};
     border-left-color: ${colors.primary};
   }
-`;
+`
 export default css`
   div {
     display: grid;
@@ -44,6 +44,8 @@ export default css`
     background: #fff;
     border-radius: 10px;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
     height: 100%;
     width: 100%;
     overflow-y: auto;
@@ -55,4 +57,4 @@ export default css`
       width: ${breakpoints.mobile};
     }
   }
-`;
+`

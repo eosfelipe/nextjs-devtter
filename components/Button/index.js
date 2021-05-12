@@ -1,4 +1,4 @@
-import { colors } from "../../styles/theme";
+import { colors } from "../../styles/theme"
 
 export default function Button({ children, disabled, onClick }) {
   return (
@@ -33,5 +33,5 @@ export default function Button({ children, disabled, onClick }) {
         }
       `}</style>
     </>
-  );
+  )
 }

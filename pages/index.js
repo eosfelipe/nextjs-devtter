@@ -1,26 +1,26 @@
-import Head from "next/head";
-import { useRouter } from "next/router";
-import { useEffect } from "react";
-import AppLayout from "components/AppLayout";
-import Button from "components/Button";
-import Github from "components/Icons/Github";
-import { colors } from "styles/theme";
-import { loginWithGithub } from "firebase/client";
-import useUser, { USER_STATES } from "hooks/useUser";
+import Head from "next/head"
+import { useRouter } from "next/router"
+import { useEffect } from "react"
+import AppLayout from "components/AppLayout"
+import Button from "components/Button"
+import Github from "components/Icons/Github"
+import { colors } from "styles/theme"
+import { loginWithGithub } from "firebase/client"
+import useUser, { USER_STATES } from "hooks/useUser"
 
 export default function Home() {
-  const user = useUser();
-  const router = useRouter();
+  const user = useUser()
+  const router = useRouter()
 
   useEffect(() => {
-    user && router.replace("/home");
-  }, [user]);
+    user && router.replace("/home")
+  }, [user])
 
   const handleLogin = () => {
     loginWithGithub().catch((error) => {
-      console.log(error);
-    });
-  };
+      console.log(error)
+    })
+  }
 
   return (
     <>
@@ -73,5 +73,5 @@ export default function Home() {
         }
       `}</style>
     </>
-  );
+  )
 }

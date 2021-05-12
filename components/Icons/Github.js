@@ -1,4 +1,4 @@
-import * as React from "react";
+import * as React from "react"
 
 export default function Github(props) {
   return (
@@ -9,5 +9,5 @@ export default function Github(props) {
         fill={props.fill}
       />
     </svg>
-  );
+  )
 }

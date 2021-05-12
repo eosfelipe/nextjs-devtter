@@ -47,10 +47,10 @@ const timeline = [
     message:
       "Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts. Separated they live in.",
   },
-];
+]
 
 export default (req, res) => {
-  res.statusCode = 200;
-  res.setHeader("Content-Type", "application/json");
-  res.send(JSON.stringify(timeline));
-};
+  res.statusCode = 200
+  res.setHeader("Content-Type", "application/json")
+  res.send(JSON.stringify(timeline))
+}

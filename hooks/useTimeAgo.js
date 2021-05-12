@@ -1,24 +1,38 @@
+import { useEffect, useState } from "react"
+
 const DATE_UNITS = [
   ["day", 86400],
   ["hour", 3600],
   ["minute", 60],
   ["second", 1],
-];
+]
 
 const getDateDiffs = (timestamp) => {
-  const now = Date.now();
-  const elapsed = (timestamp - now) / 1000;
+  const now = Date.now()
+  const elapsed = (timestamp - now) / 1000
 
   for (const [unit, secondsInUnit] of DATE_UNITS) {
     if (Math.abs(elapsed) > secondsInUnit || unit === "second") {
-      const value = Math.floor(elapsed / secondsInUnit);
-      return { value, unit };
+      const value = Math.round(elapsed / secondsInUnit)
+      return { value, unit }
     }
   }
-};
+}
 
 export default function useTimeAgo(timestamp) {
-  const { value, unit } = getDateDiffs(timestamp);
-  console.log(value, unit);
-  return timestamp;
+  const [timeago, setTimeago] = useState(() => getDateDiffs(timestamp))
+
+  const lang = sessionStorage.getItem("lang")
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const newTimeAgo = getDateDiffs(timestamp)
+      setTimeago(newTimeAgo)
+    }, 15000)
+    return () => clearInterval(interval)
+  }, [timestamp])
+
+  const rtf = new Intl.RelativeTimeFormat(lang, { style: "short" })
+  const { value, unit } = timeago
+  return rtf.format(value, unit)
 }
