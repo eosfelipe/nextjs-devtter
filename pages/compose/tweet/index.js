@@ -1,11 +1,12 @@
+import { useState, useEffect } from "react"
 import Head from "next/head"
 import { useRouter } from "next/router"
 import AppLayout from "components/AppLayout"
 import Button from "components/Button"
 import useUser from "hooks/useUser"
-import { useState } from "react"
 
-import { addDevit } from "firebase/client"
+import { addDevit, uploadImage } from "firebase/client"
+import Avatar from "components/Avatar"
 
 const COMPOSE_STATES = {
   USER_NOT_KNOWN: 0,
@@ -29,6 +30,20 @@ const ComposeTweet = () => {
   const [status, setStatus] = useState(COMPOSE_STATES.USER_NOT_KNOWN)
 
   const [drag, setDrag] = useState(DRAG_IMAGE_STATE.NONE)
+  const [task, setTask] = useState(null)
+  const [imgURL, setImgURL] = useState(null)
+
+  useEffect(() => {
+    if (task) {
+      const onProgress = () => {}
+      const onError = () => {}
+      const onComplete = () => {
+        console.log("onComplete")
+        task.snapshot.ref.getDownloadURL().then(setImgURL)
+      }
+      task.on("state_changed", onProgress, onError, onComplete)
+    }
+  }, [task])
 
   const handleChange = (e) => {
     const { value } = e.target
@@ -43,6 +58,7 @@ const ComposeTweet = () => {
       content: message,
       userId: user.uid,
       userName: user.username,
+      img: imgURL,
     })
       .then(() => {
         router.push("/home")
@@ -63,8 +79,11 @@ const ComposeTweet = () => {
   }
   const handleDragDrop = (event) => {
     event.preventDefault()
-    console.log(event)
     setDrag(DRAG_IMAGE_STATE.NONE)
+    const file = event.dataTransfer.files[0]
+
+    const task = uploadImage(file)
+    setTask(task)
   }
 
   const isButtonDisabled = !message.length || status === COMPOSE_STATES.LOADING
@@ -75,26 +94,65 @@ const ComposeTweet = () => {
         <Head>
           <title>Crear un Devit / Devtter</title>
         </Head>
-        <form onSubmit={handleSubmit}>
-          <textarea
-            onChange={handleChange}
-            onDragEnter={handleDragEnter}
-            onDragLeave={handleDragLeave}
-            onDrop={handleDragDrop}
-            placeholder="¿Qué esta pasando?"
-            value={message}
-          ></textarea>
-          <div>
-            <Button disabled={isButtonDisabled}>Devittear</Button>
-          </div>
-        </form>
+        <section className="form-container">
+          <section className="avatar-container">
+            {user && <Avatar alt={user.username} src={user.avatar} />}
+          </section>
+          <form onSubmit={handleSubmit}>
+            <textarea
+              onChange={handleChange}
+              onDragEnter={handleDragEnter}
+              onDragLeave={handleDragLeave}
+              onDrop={handleDragDrop}
+              placeholder="¿Qué esta pasando?"
+              value={message}
+            ></textarea>
+            {imgURL && (
+              <section className="remove-img">
+                <button onClick={() => setImgURL(null)}>x</button>
+                <img src={imgURL} />
+              </section>
+            )}
+            <div>
+              <Button disabled={isButtonDisabled}>Devittear</Button>
+            </div>
+          </form>
+        </section>
       </AppLayout>
       <style jsx>{`
         div {
           padding: 15px;
         }
+        .avatar-container {
+          padding-top: 20px;
+          padding-left: 10px;
+        }
+        button {
+          background: rgba(0, 0, 0, 0.3);
+          border-radius: 999px;
+          border: 0;
+          color: #fff;
+          font-size: 24px;
+          height: 32px;
+          position: absolute;
+          right: 15px;
+          top: 15px;
+          width: 32px;
+        }
+        .form-container {
+          align-items: flex-start;
+          display: flex;
+        }
+        .remove-img {
+          ´position: relative;
+        }
         form {
           padding: 10px;
+        }
+        img {
+          border-radius: 10px;
+          height: auto;
+          width: 100%;
         }
         textarea {
           border: ${drag === DRAG_IMAGE_STATE.DRAG_OVER
