@@ -1,12 +1,11 @@
 import { useState, useEffect } from "react"
 import Head from "next/head"
 import Link from "next/link"
-import AppLayout from "components/AppLayout"
 import Devit from "components/Devit"
 import Create from "components/Icons/Create"
 import Home from "components/Icons/Home"
 import Search from "components/Icons/Search"
-import { fetchLatestDevits } from "firebase/client"
+import { listenLatestDevits } from "firebase/client"
 import useUser from "hooks/useUser"
 import { colors } from "styles/theme"
 
@@ -14,58 +13,57 @@ const HomePage = () => {
   // const END_POINT = 'http://localhost:3000/api/statuses/home_timeline'
   const [timeline, setTimeline] = useState([])
   const user = useUser()
+
   useEffect(() => {
     sessionStorage.setItem("lang", window.navigator.language)
-    user &&
-      // fetch(END_POINT)
-      //   .then((res) => res.json())
-      //   .then(setTimeline);
-      fetchLatestDevits().then(setTimeline)
+    let unsubscribe
+    if (user) {
+      unsubscribe = listenLatestDevits(setTimeline)
+    }
+    return () => unsubscribe && unsubscribe()
   }, [user])
 
   return (
     <>
-      <AppLayout>
-        <Head>
-          <title>Inicio / Devtter</title>
-        </Head>
-        <header>
-          <h2>Inicio</h2>
-        </header>
-        <section>
-          {timeline.map(
-            ({ createdAt, id, img, userName, avatar, content, userId }) => (
-              <Devit
-                avatar={avatar}
-                createdAt={createdAt}
-                id={id}
-                img={img}
-                key={id}
-                content={content}
-                userName={userName}
-                userId={userId}
-              />
-            )
-          )}
-        </section>
-        <nav>
-          <Link href="/home">
-            <a>
-              <Home width={32} height={32} stroke="#09f" />
-            </a>
-          </Link>
-          <Link href="/search">
-            <a>
-              <Search width={32} height={32} stroke="#09f" />
-            </a>
-          </Link>
-          <Link href="/compose/tweet">
-            <a>
-              <Create width={32} height={32} stroke="#09f" />
-            </a>
-          </Link>
-        </nav>
-      </AppLayout>
+      <Head>
+        <title>Inicio / Devtter</title>
+      </Head>
+      <header>
+        <h2>Inicio</h2>
+      </header>
+      <section>
+        {timeline.map(
+          ({ createdAt, id, img, userName, avatar, content, userId }) => (
+            <Devit
+              avatar={avatar}
+              createdAt={createdAt}
+              id={id}
+              img={img}
+              key={id}
+              content={content}
+              userName={userName}
+              userId={userId}
+            />
+          )
+        )}
+      </section>
+      <nav>
+        <Link href="/home">
+          <a>
+            <Home width={32} height={32} stroke="#09f" />
+          </a>
+        </Link>
+        <Link href="/search">
+          <a>
+            <Search width={32} height={32} stroke="#09f" />
+          </a>
+        </Link>
+        <Link href="/compose/tweet">
+          <a>
+            <Create width={32} height={32} stroke="#09f" />
+          </a>
+        </Link>
+      </nav>
       <style jsx>{`
         header {
           align-items: center;
